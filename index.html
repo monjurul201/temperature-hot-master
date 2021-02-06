@@ -29,10 +29,10 @@
             </div>
         </form>
         <div class="weather-status text-white text-center">
-            <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
+            <img id="icon" src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
             <h1 id="city-name-display">--</h1>
             <h3><span id="temparetureDisplay">0</span>&deg;C</h3>
-            <h1 class="lead">Clouds</h1>
+            <h1 class="lead"><span id="sky-description">Processing....</span></h1>
         </div>
     </div>
 
@@ -40,8 +40,8 @@
     <script>
 
         const searchBtn = document.getElementById('search-btn');
-        searchBtn.addEventListener('click' ,()=> {
-            weatherLocationHandler() ;  
+        searchBtn.addEventListener('click', () => {
+            weatherLocationHandler();
         })
         function weatherLocationHandler() {
             const inputCity = document.getElementById('search-box').value;
@@ -49,14 +49,30 @@
             fetch(`https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&appid=8932a32c87daae9c3eba2204c7cfeb8b`)
                 .then(response => response.json())
                 .then(data => {
-                    const cityName = data.name;
-                    // let country=data.sys.country;
-                    document.getElementById("city-name-display").innerText =`${cityName},${data.sys.country}`;
-                    let Temperature=data.main.temp;
-                    Temperature=Temperature-273;
-                    document.getElementById('temparetureDisplay').innerText=Math.round(Temperature);
-                    console.log(data);
+                  
+                  
+                        const cityName = data.name;
+                        // let country=data.sys.country;
+                        document.getElementById("city-name-display").innerText = `${cityName},${data.sys.country}`;
+                        let Temperature = data.main.temp;
+                        Temperature = Temperature - 273;
+                        document.getElementById('temparetureDisplay').innerText = Math.round(Temperature);
+                        let description = data.weather[0].description;
+                        document.getElementById('sky-description').innerText = description;
+
+                       const weatherIcon= document.getElementById('icon');
+                        let Icon = data.weather[0].icon;
+                        weatherIcon.src=`https://openweathermap.org/img/wn/${Icon}@2x.png`;
+                        console.log(data);
+
+                   
+
+
                 })
+                .catch((error) => {
+                    window.alert('Error:', error);
+                });
+
 
         }
 
